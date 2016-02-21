@@ -1,11 +1,8 @@
 package websocket.views;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import websocket.util.ByteUtil;
+import java.util.Base64;
 
 public class PacketTest {
 	public static void main(String[] args) throws NoSuchAlgorithmException {
@@ -23,9 +20,10 @@ public class PacketTest {
 	}
 
 	void test(){
-		System.out.println(Short.MIN_VALUE);
-		String a="008c"; // ===> 140
-		byte[] b = ByteUtil.hexToByteArray(a);
+		String src="O+e1WnJ0/kR9tmjU+8ilUA==";
+//		String b64 = Base64.getEncoder().encodeToString(src.getBytes());
+		byte[] b64 = Base64.getDecoder().decode(src.getBytes());
+		System.out.println(new String(b64));
 		
 		
 		
