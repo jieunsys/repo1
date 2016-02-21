@@ -6,6 +6,8 @@ import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 import java.nio.ByteOrder;
+import java.util.Arrays;
+
 import org.eclipse.jface.action.*;
 import org.eclipse.ui.*;
 import org.eclipse.swt.SWT;
@@ -78,14 +80,15 @@ public class PacketViewer extends ViewPart {
 	}
 	
 	public void packetAnalyze(){
-		String hex = "81a405c12453313233343536373839306162636465666768696a6b6c6d6e6f707172737475767778797a";
+		String hex = "81a405c1245334f3176730f7136b3cf1453166a5413562a94d396ead493d6ab1552176b5512572b95d29";
 		packet.setText(hex);
 
+		byte[] key = new byte[4];
 		int keyPos = 0;
 		int dataPos = 0;
 		int dataLength = 0;
 
-		byte[] bytePacket = ByteUtil.HexToString(packet.getText()).getBytes();
+		byte[] bytePacket = ByteUtil.hexToByteArray(packet.getText());
 		
 		int fin = ByteUtil.getBitRange(bytePacket[0],7,1);
 		fin1.setText(String.format("%02x%n",fin));
@@ -112,7 +115,7 @@ public class PacketViewer extends ViewPart {
 		int len = ByteUtil.getBitRange(bytePacket[1],6,7);
 		len1.setText(String.format("%02x%n",len));
 		len2.setText("." + ByteUtil.getBitRangeString(bytePacket[0],6,7));
-		len3.setText("Payload Length = " + len + "   (126=Ex Len1, 127=Ex Len2)");
+		len3.setText("Payload Length = " + len + "   (126=Ex1, 127=Ex2)");
 
 		keyPos=2;
 		dataPos=2;
@@ -122,7 +125,7 @@ public class PacketViewer extends ViewPart {
 			exlenB1.setText(""); exlenB2.setText(""); exlenB3.setText("´ë»ó ¾Æ´Ô");
 		}else if(len==126){
 			exlenB1.setText(""); exlenB2.setText(""); exlenB3.setText("´ë»ó ¾Æ´Ô");
-			byte[] tmpb = ByteUtil.byteSubstring( bytePacket, 2, 4);
+			byte[] tmpb = Arrays.copyOfRange(bytePacket,2,4);
 			int exlenA = ByteUtil.bytesToShort( tmpb, ByteOrder.LITTLE_ENDIAN);
 			exlenA1.setText(String.format("%02x%n", exlenA));
 			exlenA2.setText(ByteUtil.getBitString(tmpb[0]) + ByteUtil.getBitString(tmpb[1]));
@@ -132,7 +135,7 @@ public class PacketViewer extends ViewPart {
 			dataLength = exlenA;
 		}else if(len==127){
 			exlenA1.setText(""); exlenA2.setText(""); exlenA3.setText("´ë»ó ¾Æ´Ô");
-			byte[] tmpb = ByteUtil.byteSubstring( bytePacket, 2, 10);
+			byte[] tmpb = Arrays.copyOfRange(bytePacket, 2, 10);
 			int exlenB = ByteUtil.bytesToShort( tmpb, ByteOrder.LITTLE_ENDIAN);
 			exlenB1.setText(String.format("%02x%n", exlenB));
 			StringBuffer sb = new StringBuffer();
@@ -148,26 +151,22 @@ public class PacketViewer extends ViewPart {
 		}
 		
 		if(mask==1){
-			byte[] tmpb = ByteUtil.byteSubstring( bytePacket, keyPos, keyPos+4);
-			int key = ByteUtil.bytesToInt( tmpb, ByteOrder.LITTLE_ENDIAN);
-			key1.setText(String.format("%02x%n", key));
-			StringBuffer sb = new StringBuffer();
-			for(int i=0;i<4;i++) { // key = 4byte 
-				if(i>0) sb.append(" ");
-				sb.append(ByteUtil.getBitString(tmpb[i])); 
-			}
-			key2.setText(sb.toString());
-			key3.setText("Key = " + String.format("%02x%n", key) );
+			key = Arrays.copyOfRange(bytePacket, keyPos, keyPos+4);
+			String hexKeyStr = ByteUtil.byteArrayToHex(key);
+			key3.setText(hexKeyStr);
 			dataPos += 4; // Mask Key = 4byte
 		} else {
 			key1.setText("");
 			key2.setText("");
 			key3.setText("´ë»ó¾Æ´Ô");
 		}
-System.out.println("#################################################");		
-System.out.println("dataPos=" + dataPos);
-System.out.println("dataLength=" + dataLength);
-		byte[] tmpb = ByteUtil.byteSubstring(bytePacket, dataPos, dataPos + dataLength-1);
+
+		byte[] tmpb = Arrays.copyOfRange(bytePacket, dataPos, dataPos+dataLength);
+		if(mask==1){
+			for(int i=0;i<tmpb.length;i++){
+				tmpb[i] = (byte)(tmpb[i] ^ key[i%4]);
+			}
+		}
 		data1.setText(  new String(tmpb)  );
 	}
 
