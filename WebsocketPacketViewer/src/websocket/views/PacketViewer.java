@@ -78,10 +78,39 @@ public class PacketViewer extends ViewPart {
 
 	public PacketViewer() {
 	}
-	
+
+	public void formClear(){
+		packet.setText("");
+		fin1.setText("");
+		fin2.setText("");
+		fin3.setText("");
+		rsv1.setText("");
+		rsv2.setText("");
+		rsv3.setText("");
+		op1.setText("");
+		op2.setText("");
+		op3.setText("");
+		mask1.setText("");
+		mask2.setText("");
+		mask3.setText("");
+		len1.setText("");
+		len2.setText("");
+		len3.setText("");
+		exlenA1.setText("");
+		exlenA2.setText("");
+		exlenA3.setText("");
+		exlenB1.setText("");
+		exlenB2.setText("");
+		exlenB3.setText("");
+		key1.setText("");
+		key2.setText("");
+		key3.setText("");
+		data1.setText("");
+		data2.setText("");
+	}
 	public void packetAnalyze(){
-		String hex = "81a405c1245334f3176730f7136b3cf1453166a5413562a94d396ead493d6ab1552176b5512572b95d29";
-		packet.setText(hex);
+//		String hex = "81a405c1245334f3176730f7136b3cf1453166a5413562a94d396ead493d6ab1552176b5512572b95d29";
+//		packet.setText(hex);
 
 		byte[] key = new byte[4];
 		int keyPos = 0;
@@ -126,7 +155,7 @@ public class PacketViewer extends ViewPart {
 		}else if(len==126){
 			exlenB1.setText(""); exlenB2.setText(""); exlenB3.setText("´ë»ó ¾Æ´Ô");
 			byte[] tmpb = Arrays.copyOfRange(bytePacket,2,4);
-			int exlenA = ByteUtil.bytesToShort( tmpb, ByteOrder.LITTLE_ENDIAN);
+			int exlenA = ByteUtil.bytesToShort(tmpb);
 			exlenA1.setText(String.format("%02x%n", exlenA));
 			exlenA2.setText(ByteUtil.getBitString(tmpb[0]) + ByteUtil.getBitString(tmpb[1]));
 			exlenA3.setText("Length = " + exlenA);
@@ -136,7 +165,7 @@ public class PacketViewer extends ViewPart {
 		}else if(len==127){
 			exlenA1.setText(""); exlenA2.setText(""); exlenA3.setText("´ë»ó ¾Æ´Ô");
 			byte[] tmpb = Arrays.copyOfRange(bytePacket, 2, 10);
-			int exlenB = ByteUtil.bytesToShort( tmpb, ByteOrder.LITTLE_ENDIAN);
+			int exlenB = ByteUtil.bytesToShort(tmpb);
 			exlenB1.setText(String.format("%02x%n", exlenB));
 			StringBuffer sb = new StringBuffer();
 			for(int i=0;i<8;i++) { 
@@ -183,33 +212,30 @@ public class PacketViewer extends ViewPart {
 		packet.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		packet.setBounds(87, 24, 481, 21);
 		
-		Button button1 = new Button(parent, SWT.NONE);
-		button1.addSelectionListener(new SelectionAdapter() {
+		Button btnAnalyze = new Button(parent, SWT.NONE);
+		btnAnalyze.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 			}
 		});
-		button1.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
-		button1.setBounds(21, 51, 57, 25);
-		button1.setText("Analyze");
+		btnAnalyze.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
+		btnAnalyze.setBounds(21, 51, 57, 25);
+		btnAnalyze.setText("Analyze");
 		
-		Listener button1Listener = new Listener() {
+		Listener btnAnalyzeListener = new Listener() {
 			public void handleEvent(Event event) {
 				packetAnalyze();
 			}
 		};
-		button1.addListener(SWT.Selection, button1Listener);		
-		
-		
-		
-		
-		
+		btnAnalyze.addListener(SWT.Selection, btnAnalyzeListener);		
 		
 		fin1 = new Text(parent, SWT.BORDER);
+		fin1.setBackground(SWTResourceManager.getColor(255, 255, 224));
 		fin1.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		fin1.setBounds(87, 80, 22, 21);
 		
 		fin2 = new Text(parent, SWT.BORDER);
+		fin2.setBackground(SWTResourceManager.getColor(255, 255, 224));
 		fin2.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		fin2.setBounds(113, 80, 72, 21);
 		
@@ -271,34 +297,42 @@ public class PacketViewer extends ViewPart {
 		data1.setBounds(23, 322, 545, 74);
 		
 		rsv1 = new Text(parent, SWT.BORDER);
+		rsv1.setBackground(SWTResourceManager.getColor(255, 255, 224));
 		rsv1.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		rsv1.setBounds(87, 107, 22, 21);
 		
 		rsv2 = new Text(parent, SWT.BORDER);
+		rsv2.setBackground(SWTResourceManager.getColor(255, 255, 224));
 		rsv2.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		rsv2.setBounds(113, 107, 72, 21);
 		
 		op1 = new Text(parent, SWT.BORDER);
+		op1.setBackground(SWTResourceManager.getColor(255, 255, 224));
 		op1.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		op1.setBounds(87, 134, 22, 21);
 		
 		op2 = new Text(parent, SWT.BORDER);
+		op2.setBackground(SWTResourceManager.getColor(255, 255, 224));
 		op2.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		op2.setBounds(113, 134, 72, 21);
 		
 		mask1 = new Text(parent, SWT.BORDER);
+		mask1.setBackground(SWTResourceManager.getColor(245, 245, 220));
 		mask1.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		mask1.setBounds(87, 161, 22, 21);
 		
 		mask2 = new Text(parent, SWT.BORDER);
+		mask2.setBackground(SWTResourceManager.getColor(245, 245, 220));
 		mask2.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		mask2.setBounds(113, 161, 72, 21);
 		
 		len1 = new Text(parent, SWT.BORDER);
+		len1.setBackground(SWTResourceManager.getColor(245, 245, 220));
 		len1.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		len1.setBounds(87, 188, 22, 21);
 		
 		len2 = new Text(parent, SWT.BORDER);
+		len2.setBackground(SWTResourceManager.getColor(245, 245, 220));
 		len2.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		len2.setBounds(113, 188, 72, 21);
 		
@@ -319,10 +353,12 @@ public class PacketViewer extends ViewPart {
 		exlenB2.setBounds(178, 242, 83, 21);
 		
 		key1 = new Text(parent, SWT.BORDER);
+		key1.setBackground(SWTResourceManager.getColor(255, 192, 203));
 		key1.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		key1.setBounds(87, 268, 55, 21);
 		
 		key2 = new Text(parent, SWT.BORDER);
+		key2.setBackground(SWTResourceManager.getColor(255, 192, 203));
 		key2.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		key2.setBounds(148, 268, 113, 21);
 		
@@ -331,22 +367,27 @@ public class PacketViewer extends ViewPart {
 		data2.setBounds(23, 402, 545, 74);
 		
 		fin3 = new Text(parent, SWT.BORDER);
+		fin3.setBackground(SWTResourceManager.getColor(255, 255, 224));
 		fin3.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		fin3.setBounds(190, 80, 377, 21);
 		
 		rsv3 = new Text(parent, SWT.BORDER);
+		rsv3.setBackground(SWTResourceManager.getColor(255, 255, 224));
 		rsv3.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		rsv3.setBounds(190, 107, 377, 21);
 		
 		op3 = new Text(parent, SWT.BORDER);
+		op3.setBackground(SWTResourceManager.getColor(255, 255, 224));
 		op3.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		op3.setBounds(190, 134, 377, 21);
 		
 		mask3 = new Text(parent, SWT.BORDER);
+		mask3.setBackground(SWTResourceManager.getColor(245, 245, 220));
 		mask3.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		mask3.setBounds(190, 161, 377, 21);
 		
 		len3 = new Text(parent, SWT.BORDER);
+		len3.setBackground(SWTResourceManager.getColor(245, 245, 220));
 		len3.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		len3.setBounds(190, 188, 377, 21);
 		
@@ -359,8 +400,21 @@ public class PacketViewer extends ViewPart {
 		exlenB3.setBounds(266, 242, 301, 21);
 		
 		key3 = new Text(parent, SWT.BORDER);
+		key3.setBackground(SWTResourceManager.getColor(255, 192, 203));
 		key3.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
 		key3.setBounds(266, 268, 301, 21);
+		
+		Button btnClear = new Button(parent, SWT.NONE);
+		btnClear.setBounds(80, 51, 57, 25);
+		btnClear.setText("Clear");
+		
+		Listener btnClearListener = new Listener() {
+			public void handleEvent(Event event) {
+				formClear();
+			}
+		};
+		btnClear.addListener(SWT.Selection, btnClearListener);		
+		
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();

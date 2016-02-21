@@ -1,7 +1,11 @@
 package websocket.views;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import websocket.util.ByteUtil;
 
 public class PacketTest {
 	public static void main(String[] args) throws NoSuchAlgorithmException {
@@ -19,6 +23,12 @@ public class PacketTest {
 	}
 
 	void test(){
+		System.out.println(Short.MIN_VALUE);
+		String a="008c"; // ===> 140
+		byte[] b = ByteUtil.hexToByteArray(a);
+		
+		
+		
 	}
 
 }

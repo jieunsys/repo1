@@ -69,47 +69,34 @@ public class ByteUtil {
 		System.out.println("a=" + a);
 	}
 	
-	public static byte[] longToBytes(long x) {
-		ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-		buffer.putLong(x);
-		return buffer.array();
+	public static void longToBytes(long x) {
+		ByteBuffer buf = ByteBuffer.allocate(Long.SIZE / 8);
+		buf.putLong(x);
 	}
 
 	public static long bytesToLong(byte[] bytes) {
-		ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-		buffer.put(bytes);
-		buffer.flip();// need flip
-		return buffer.getLong();
+		ByteBuffer buf = ByteBuffer.wrap(bytes);
+		return buf.getLong();
 	}
 
-	public static byte[] intToBytes(int integer, ByteOrder order) {
-		ByteBuffer buff = ByteBuffer.allocate(Integer.SIZE / 8);
-		buff.order(order);
-		buff.putInt(integer);
-		return buff.array();
+	public static void intToBytes(int integer, ByteOrder order) {
+		ByteBuffer buf = ByteBuffer.allocate(Integer.SIZE / 8);
+		buf.putInt(integer);
 	}
 
 	public static int bytesToInt(byte[] bytes, ByteOrder order) {
-		ByteBuffer buff = ByteBuffer.allocate(Integer.SIZE / 8);
-		buff.order(order);
-		buff.put(bytes);
-		buff.flip();
-		return buff.getInt();
+		ByteBuffer buf = ByteBuffer.wrap(bytes);
+		return buf.getInt();
 	}
 
-	public static byte[] shortToBytes(short shorter, ByteOrder order) {
-		ByteBuffer buff = ByteBuffer.allocate(Short.SIZE / 8);
-		buff.order(order);
-		buff.putShort(shorter);
-		return buff.array();
+	public static void shortToBytes(short shorter, ByteOrder order) {
+		ByteBuffer buf = ByteBuffer.allocate(Short.SIZE / 8);
+		buf.putShort(shorter);
 	}
 
-	public static short bytesToShort(byte[] bytes, ByteOrder order) {
-		ByteBuffer buff = ByteBuffer.allocate(Short.SIZE / 8);
-		buff.order(order);
-		buff.put(bytes);
-		buff.flip();
-		return buff.getShort();
+	public static short bytesToShort(byte[] bytes) {
+		ByteBuffer buf = ByteBuffer.wrap(bytes);
+		return buf.getShort();
 	}
 	
 	public static byte[] hexToByteArray(String hex) {
