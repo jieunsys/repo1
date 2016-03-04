@@ -41,7 +41,7 @@ public class SSLClient {
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
 			tmf.init(ks);
 
-			sslContext = SSLContext.getInstance("TLS");
+			sslContext = SSLContext.getInstance("TLSv1.2");
 			sslContext.init(null, tmf.getTrustManagers(), null);
 
 			// Create SSLEngine

@@ -5,7 +5,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
-import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import org.eclipse.jface.action.*;
@@ -137,7 +136,7 @@ public class PacketViewer extends ViewPart {
 		
 		int mask = ByteUtil.getBitRange(bytePacket[1],7,1);
 		mask1.setText(String.format("%02x%n",mask));
-		mask2.setText(fin + ".......");
+		mask2.setText(mask + ".......");
 		if(mask==1) mask3.setText("Mask = TRUE");
 		else mask3.setText("Mask = FALSE");
 		

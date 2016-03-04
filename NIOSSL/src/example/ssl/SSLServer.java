@@ -14,6 +14,8 @@ import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
 
+import example.util.Util;
+
 public class SSLServer {
 	private String keyStorePath;
 	private char[] passPhrase;
@@ -28,6 +30,16 @@ public class SSLServer {
 	private ByteBuffer outNetBuffer;
 	private ByteBuffer inAppBuffer;
 	private ByteBuffer dummy;
+	
+	private boolean isHandshake = false;
+
+	public boolean isHandshake() {
+		return isHandshake;
+	}
+
+	public void setHandshake(boolean isHandshake) {
+		this.isHandshake = isHandshake;
+	}
 
 	public SSLServer(String keyStorePath, char[] passPhrase, SocketChannel sc) throws Exception {
 		try {
@@ -42,7 +54,7 @@ public class SSLServer {
 			KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
 			kmf.init(ks, passPhrase);
 
-			sslContext = SSLContext.getInstance("TLS");
+			sslContext = SSLContext.getInstance("TLSv1.2"); //TODO
 			sslContext.init(kmf.getKeyManagers(), null, null);
 
 			// Create SSLEngine
@@ -148,15 +160,14 @@ public class SSLServer {
 	}
 
 	private void printSSLEngineResult(String str) {
-		if (sslEngineResult == null)
-			return;
-		// Util.log("============================================================================================");
-		// Util.log(str);
-		// Util.log("============================================================================================");
-		// Util.log("Status=" + sslEngineResult.getStatus() + " bytesConsumed="
-		// + sslEngineResult.bytesConsumed() + " bytesProduced=" +
-		// sslEngineResult.bytesProduced());
-		// Util.log(sslEngineResult.toString());
+		if (sslEngineResult == null) return;
+//		 Util.log("============================================================================================");
+//		 Util.log(str);
+//		 Util.log("============================================================================================");
+//		 Util.log("Status=" + sslEngineResult.getStatus() + " bytesConsumed="
+//		 + sslEngineResult.bytesConsumed() + " bytesProduced=" +
+//		 sslEngineResult.bytesProduced());
+//		 Util.log(sslEngineResult.toString());
 	}
 
 	private void writeToSocket(ByteBuffer buff) throws IOException {
