@@ -22,8 +22,11 @@ public class SimpleNIOServer {
 
 	private static final int PORT = 9090;
 
-	private static final String keyStore = "keystore/server/SimpleNIOServer.keystore";
-	private static final String storepass = "example";
+//	private static final String keyStore = "keystore/server/SimpleNIOServer.keystore";
+//	private static final String storepass = "example";
+
+	private static final String keyStore = "keystore/server/kumuri.store";
+	private static final String storepass = "kumuri";
 
 	private Selector selector = null;
 	private ServerSocketChannel serverSocketChannel = null;
@@ -98,6 +101,8 @@ public class SimpleNIOServer {
 	}
 	
 	private String getResponseString(String str){
+		System.out.println("======  Request ======================================");
+		System.out.println(str);
 		String[] va = str.split("\n");
 		String secAccept=null;
 		for(String line:va){
@@ -125,6 +130,28 @@ public class SimpleNIOServer {
 		return sb.toString();
 	}
 
+	private void printStatus(HandshakeStatus hs){
+		switch(hs){
+		case FINISHED:
+			System.out.println("HandshakeStatus = FINISHED");
+			break;
+		case NEED_TASK:
+			System.out.println("HandshakeStatus = NEED_TASK");
+			break;
+		case NEED_UNWRAP:
+			System.out.println("HandshakeStatus = NEED_UNWRAP");
+			break;
+		case NEED_WRAP:
+			System.out.println("HandshakeStatus = NEED_WRAP");
+			break;
+		case NOT_HANDSHAKING:
+			System.out.println("HandshakeStatus = NOT_HANDSHAKING");
+			break;
+		default:
+			System.out.println("HandshakeStatus = default");
+			break;
+		}
+	}
 	private void read(SelectionKey key) {
 		SocketChannel sc = (SocketChannel) key.channel();
 
@@ -132,17 +159,22 @@ public class SimpleNIOServer {
 
 		try {
 			SSLServer sslServer = sslServerMap.get(sc);
-			if (sslServer.getHandShakeStatus() != HandshakeStatus.NOT_HANDSHAKING
-					&& sslServer.getHandShakeStatus() != HandshakeStatus.FINISHED) {
+			HandshakeStatus hs = sslServer.getHandShakeStatus();
+printStatus(sslServer.getHandShakeStatus());			
+			if (hs != HandshakeStatus.NOT_HANDSHAKING && hs != HandshakeStatus.FINISHED) {
 				sslServer.handshake(sc);
 			} else {
+System.out.println("######################################## handshake OK");				
 				/**** start *****/
-				if (sc.read(buffer) > 0) {
+				int len = sc.read(buffer);
+				System.out.println("################### len=" + len);
+				if (len > 0) {
 					buffer.flip();
 				
 					ByteBuffer b1 = sslServer.decrypt(buffer);
 					String str = Util.bufferToString(b1);
-					System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< Data Request=[" + str + "]");
+System.out.println("############################### str=" + str);					
+
 					if(sslServer.isHandshake()){
 						String ok = "813731313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131";
 						
@@ -158,12 +190,15 @@ public class SimpleNIOServer {
 						return;
 					}
 
-					sslServer.setHandshake(true);
 					String responseString = getResponseString(str);
 					sc.write(sslServer.encrypt(ByteBuffer.wrap(responseString.getBytes())));
+					sslServer.setHandshake(true);
 				}else{
+System.out.println("###################### end-of-stream: try shutdown()");					
 					sslServer.closeInbound();
+System.out.println("############ shutdown 2");					
 					shutdown(sc);
+System.out.println("############### shutdown 3");					
 				}
 				int a=5; if(a==5)return;
 				/**** end *******/

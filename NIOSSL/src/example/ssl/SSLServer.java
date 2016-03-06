@@ -46,7 +46,7 @@ public class SSLServer {
 			this.keyStorePath = keyStorePath;
 			this.passPhrase = passPhrase;
 			this.sc = sc;
-
+			
 			// initialize
 			KeyStore ks = KeyStore.getInstance("JKS");
 			ks.load(new FileInputStream(keyStorePath), passPhrase);
@@ -54,7 +54,7 @@ public class SSLServer {
 			KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
 			kmf.init(ks, passPhrase);
 
-			sslContext = SSLContext.getInstance("TLSv1.2"); //TODO
+			sslContext = SSLContext.getInstance("TLS"); //TODO
 			sslContext.init(kmf.getKeyManagers(), null, null);
 
 			// Create SSLEngine
@@ -164,9 +164,7 @@ public class SSLServer {
 //		 Util.log("============================================================================================");
 //		 Util.log(str);
 //		 Util.log("============================================================================================");
-//		 Util.log("Status=" + sslEngineResult.getStatus() + " bytesConsumed="
-//		 + sslEngineResult.bytesConsumed() + " bytesProduced=" +
-//		 sslEngineResult.bytesProduced());
+//		 Util.log("Status=" + sslEngineResult.getStatus() + " bytesConsumed=" + sslEngineResult.bytesConsumed() + " bytesProduced=" + sslEngineResult.bytesProduced());
 //		 Util.log(sslEngineResult.toString());
 	}
 
