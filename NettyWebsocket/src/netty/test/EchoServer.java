@@ -1,4 +1,4 @@
-package pak;
+package netty.test;
 
 import java.net.*;
 import java.io.*;
