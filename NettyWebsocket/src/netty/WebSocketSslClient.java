@@ -39,7 +39,8 @@ public final class WebSocketSslClient {
         if (args.length > 0) {
             uri = new URI(args[0]);
         } else {
-            uri = new URI("wss://localhost:8443/websocket");
+//            uri = new URI("wss://localhost:8443/websocket");
+            uri = new URI("wss://localhost:9090/websocket");
         }
 
         new WebSocketClientRunner(uri).run();

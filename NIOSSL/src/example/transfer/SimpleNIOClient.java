@@ -59,7 +59,7 @@ public class SimpleNIOClient {
 				}
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 

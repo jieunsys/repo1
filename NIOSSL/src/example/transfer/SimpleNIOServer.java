@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
+import javax.net.ssl.SSLException;
 
 import example.ssl.SSLServer;
 import example.util.ByteUtil;
@@ -100,9 +101,23 @@ public class SimpleNIOServer {
 		}
 	}
 	
-	private String getResponseString(String str){
+	private void getResponseString(SocketChannel sc, SSLServer sslServer, String str) throws SSLException, IOException {
 		System.out.println("======  Request ======================================");
-		System.out.println(str);
+		System.out.println("[[[" + str + "]]]");
+		
+		if(str.startsWith("GET / HTTP/1.1")){
+			System.out.println("##########################################");
+			String ok = "HTTP/1.1 200 OK\n\n<html><body>HelloWorld@@</body></html>\n";
+//			ok = ByteUtil.byteArrayToHex( ok.getBytes() );
+			
+			ok= HelloWorlds.getHelloWorlds();
+			System.out.println("ok=[[[" + ok + "]]]");
+			
+			sc.write(sslServer.encrypt(ByteBuffer.wrap(ok.getBytes())));
+			shutdown(sc);
+			return;
+		}
+		
 		String[] va = str.split("\n");
 		String secAccept=null;
 		for(String line:va){
@@ -127,31 +142,21 @@ public class SimpleNIOServer {
 		System.out.println("======= Response Send Start ====================================================");					
 		System.out.println(sb.toString());					
 		System.out.println("======= Response Send End ====================================================");	
-		return sb.toString();
+		
+		try {
+			sc.write(sslServer.encrypt(ByteBuffer.wrap(sb.toString().getBytes())));
+		} catch (SSLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		sslServer.setHandshake(true);
+
+		return;
 	}
 
-	private void printStatus(HandshakeStatus hs){
-		switch(hs){
-		case FINISHED:
-			System.out.println("HandshakeStatus = FINISHED");
-			break;
-		case NEED_TASK:
-			System.out.println("HandshakeStatus = NEED_TASK");
-			break;
-		case NEED_UNWRAP:
-			System.out.println("HandshakeStatus = NEED_UNWRAP");
-			break;
-		case NEED_WRAP:
-			System.out.println("HandshakeStatus = NEED_WRAP");
-			break;
-		case NOT_HANDSHAKING:
-			System.out.println("HandshakeStatus = NOT_HANDSHAKING");
-			break;
-		default:
-			System.out.println("HandshakeStatus = default");
-			break;
-		}
-	}
 	private void read(SelectionKey key) {
 		SocketChannel sc = (SocketChannel) key.channel();
 
@@ -160,45 +165,30 @@ public class SimpleNIOServer {
 		try {
 			SSLServer sslServer = sslServerMap.get(sc);
 			HandshakeStatus hs = sslServer.getHandShakeStatus();
-printStatus(sslServer.getHandShakeStatus());			
 			if (hs != HandshakeStatus.NOT_HANDSHAKING && hs != HandshakeStatus.FINISHED) {
 				sslServer.handshake(sc);
 			} else {
-System.out.println("######################################## handshake OK");				
 				/**** start *****/
 				int len = sc.read(buffer);
-				System.out.println("################### len=" + len);
 				if (len > 0) {
 					buffer.flip();
 				
 					ByteBuffer b1 = sslServer.decrypt(buffer);
 					String str = Util.bufferToString(b1);
-System.out.println("############################### str=" + str);					
-
 					if(sslServer.isHandshake()){
 						String ok = "813731313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131";
-						
-//ok = "HTTP/1.1 200 OK\n\n<html><body>HelloWorld@@</body></html>\n";
-//ok = ByteUtil.byteArrayToHex( ok.getBytes() );
 						
 						byte[] bb=ByteUtil.hexToByteArray(ok);
 						System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> Data Response 1st=[" + new String(bb) + "]");
 						ByteBuffer b2 = sslServer.encrypt(ByteBuffer.wrap(bb));
-//						String ok2 = Util.bufferToString(b2);
 						sc.write(b2);
-//shutdown(sc);
 						return;
 					}
 
-					String responseString = getResponseString(str);
-					sc.write(sslServer.encrypt(ByteBuffer.wrap(responseString.getBytes())));
-					sslServer.setHandshake(true);
+					getResponseString(sc, sslServer, str);
 				}else{
-System.out.println("###################### end-of-stream: try shutdown()");					
 					sslServer.closeInbound();
-System.out.println("############ shutdown 2");					
 					shutdown(sc);
-System.out.println("############### shutdown 3");					
 				}
 				int a=5; if(a==5)return;
 				/**** end *******/
