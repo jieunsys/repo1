@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package io.netty.example.http.websocketx.sslserver;
+package netty;
 
 import java.net.URI;
 
@@ -22,7 +22,7 @@ import java.net.URI;
  * <p>
  * In order to run this example you need a compatible secure WebSocket server.
  * Therefore you can either start the secure WebSocket server from the examples
- * by running {@link io.netty.example.http.websocketx.sslserver.WebSocketSslServer}
+ * by running {@link netty.WebSocketSslServer}
  * or connect to an existing secure WebSocket server such as
  * <a href="http://www.websocket.org/echo.html">wss://echo.websocket.org</a>.
  * <p>
