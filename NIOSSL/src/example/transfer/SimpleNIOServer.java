@@ -166,9 +166,12 @@ public class SimpleNIOServer {
 			SSLServer sslServer = sslServerMap.get(sc);
 			HandshakeStatus hs = sslServer.getHandShakeStatus();
 			if (hs != HandshakeStatus.NOT_HANDSHAKING && hs != HandshakeStatus.FINISHED) {
+				System.out.println("############## SERVER: handshake() start");
 				sslServer.handshake(sc);
+				System.out.println("############## SERVER: handshake() end");
 			} else {
 				/**** start *****/
+				System.out.println("############## SERVER: read() start");
 				int len = sc.read(buffer);
 				if (len > 0) {
 					buffer.flip();
@@ -176,6 +179,7 @@ public class SimpleNIOServer {
 					ByteBuffer b1 = sslServer.decrypt(buffer);
 					String str = Util.bufferToString(b1);
 					if(sslServer.isHandshake()){
+						System.out.println( "REQUEST = [[[" + ByteUtil.byteArrayToHex(str.getBytes()) + "]]]");
 						String ok = "813731313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131";
 						
 						byte[] bb=ByteUtil.hexToByteArray(ok);
