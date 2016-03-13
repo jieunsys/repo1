@@ -20,14 +20,13 @@ import example.util.ByteUtil;
 import example.util.Util;
 
 public class SimpleNIOServer {
-
 	private static final int PORT = 9090;
-
-//	private static final String keyStore = "keystore/server/SimpleNIOServer.keystore";
-//	private static final String storepass = "example";
-
-	private static final String keyStore = "keystore/server/kumuri.store";
-	private static final String storepass = "kumuri";
+	
+//	Make KeyStore
+//	Keytool -genkey -alias mukuri -keystore mukuri.jks -keyalg RSA -keysize 2048 -sigalg SHA256withRSA  -storepass mukuri -storetype JKS -dname "cn=CN1, ou=OU1, o=Seoul, c=KR" -keypass mukuri -validity 7 -v
+	
+	private static final String keyStore = "keystore/server/mukuri.jks";
+	private static final String storepass = "mukuri";
 
 	private Selector selector = null;
 	private ServerSocketChannel serverSocketChannel = null;
