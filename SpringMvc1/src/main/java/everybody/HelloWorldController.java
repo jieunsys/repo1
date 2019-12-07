@@ -13,7 +13,7 @@ public class HelloWorldController extends AbstractController {
 			throws Exception {
 
 		ModelAndView model = new ModelAndView("HelloWorldPage");
-		model.addObject("msg", "hello world 1234");
+		model.addObject("msg", "helloworld 한글테스트에요1234");
 
 		return model;
 	}

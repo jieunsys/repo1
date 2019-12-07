@@ -1,12 +1,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+	pageEncoding="EUC-KR"%>
+<!DOCTYPE html>
 <html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+</head>
 <body>
 	<h1>Spring MVC Hello World Example</h1>
 
 	<h2>HelloWord Everybody</h2>
-	안녕하세요
-	한글 테스트입니다
 	HelloWorld
-	
+	�Ķ��Ÿ = [${msg}]
 </body>
 </html>
+
